@@ -4,7 +4,6 @@ This is a collection of frequently used functions for Firebase Cloud Functions a
 The following steps are intended for use with a Firebase-project and the [polymerfire](https://www.webcomponents.org/element/firebase/polymerfire) elements. Please make sure you have a Polymer web app (preferably generated w/ the [polymer-cli](https://github.com/Polymer/polymer-cli)) up and running before continuing.
 
 ## Steps
-<!-- for cloud-funcs readme -->
 1. Add `gcm_sender_id: "103953800509"` to `manifest.json`
 2. Create `firebase-messaging-sw.js` and add it as dependency in `polymer.json` (get **SENDER_ID** from `Settings > Project Settings > Cloud Messaging`in the Firebase console):
 
@@ -17,7 +16,7 @@ importScripts('https://www.gstatic.com/firebasejs/3.5.2/firebase-messaging.js');
 
 // Initialize the Firebase app in the service worker by passing in the messagingSenderId
 firebase.initializeApp({
-  'messagingSenderId': '[**SENDER_ID**]'
+  'messagingSenderId': '[ SENDER_ID ]'
 });
 
 // Retrieve an instance of Firebase Messaging so that it can handle background
@@ -40,6 +39,26 @@ const messaging = firebase.messaging();
   }
 }
 ```
+  - Create `index.js`, add imports and init app:
+``` javascript
+// Import and initialize the Firebase Admin SDK.
+const admin = require('firebase-admin');
+// Import the Firebase SDK for Google Cloud Functions
+const functions = require('firebase-functions');
+// Import request
+const request = require('request');
+// Init
+admin.initializeApp(functions.config().firebase);
+```
+  - Set `SERVER_KEY` (get **SERVER_KEY** from `Settings > Project Settings > Cloud Messaging`):
+``` javascript
+// Setting api key
+const MESSAGING_SERVER_KEY = "SERVER_KEY";
+```
+  - Add export function snippets to the bottom of `index.js`
+  - Lastly add `logStatus.snippet.js` to enable output to [logs](https://console.cloud.google.com/logs/viewer)
+  - (Optional) Update `Security Rules` if using Firebase db triggers
+
 
 ## Setup
 
