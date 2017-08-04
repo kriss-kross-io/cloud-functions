@@ -8,11 +8,11 @@ var logStatus = (token) => {
     }
   }, function(error, response, body) {
     if (error) {
-      console.error('ERROR(STATUS): ' + error);
+      console.error('ERROR(status): ' + error);
     } else if (response.statusCode >= 400) {
-      console.error('ERROR(STATUS): ErrorCode:'+response.statusCode+' - %s', response.statusMessage);
+      console.error('ERROR(status): ErrorCode: '+response.statusCode+' - %s', response.statusMessage);
     } else {
-      console.info('STATUS: Info for user(%s): ' + body, token);
+      console.info('STATUS: Info for User(%s): ' + body, token);
     }
   });
 };

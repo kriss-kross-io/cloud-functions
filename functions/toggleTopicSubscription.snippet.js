@@ -1,4 +1,4 @@
-/* SUBSCRIBE/UNSUBSCRIBE */
+/* SUBSCRIBE / UNSUBSCRIBE */
 exports.toggleTopicSubscription = functions.database.ref('/topics/{topic}/{token}').onWrite(event => {
   // Setting variables
   const topic = event.params.topic;
@@ -11,45 +11,23 @@ exports.toggleTopicSubscription = functions.database.ref('/topics/{topic}/{token
       return;
     }
     // subscribing
-    request({
-      url: 'https://iid.googleapis.com/iid/v1/'+token+'/rel/topics/'+topic,
-      method: 'POST',
-      headers: {
-        'Content-Type' :' application/json',
-        'Authorization': 'key='+MESSAGING_SERVER_KEY
-      }
-    }, function(error, response, body) {
-      if (error) {
-        console.error('ERROR(SUBSCRIBE): ' + error);
-      } else if (response.statusCode >= 400) {
-        console.error('ERROR(SUBSCRIBE): ErrorCode:'+response.statusCode+' - %s', response.statusMessage);
-      } else {
-        console.log('SUBSCRIBED: User(%s) subscribed to topic(%s)', token, topic);
-      }
-      logStatus(token);
-    });
+    admin.messaging().subscribeToTopic(token, topic)
+      .then(function(response) {
+        console.log('SUBSCRIBED: User(%s) subscribed to topic(%s): ' + response, token, topic);
+        logStatus(token);
+      })
+      .catch(function(error) {
+        console.error('ERROR(sub): User(%s) failed subscribing to topic(%s): ' + error, token, topic);
+      });
   } else {
     // unsubscribing
-    request({
-      url: 'https://iid.googleapis.com/iid/v1:batchRemove',
-      method: 'POST',
-      headers: {
-        'Content-Type' :' application/json',
-        'Authorization': 'key='+MESSAGING_SERVER_KEY
-      },
-      body: JSON.stringify({
-        registration_tokens: [token],
-        to : '/topics/'+topic
+    admin.messaging().unsubscribeFromTopic(token, topic)
+      .then(function(response) {
+        console.log('UNSUBSCRIBED: User(%s) unsubscribed from topic(%s): ' + response, token, topic);
+        logStatus(token);
       })
-    }, function(error, response, body) {
-      if (error) {
-        console.error('ERROR(UNSUBSCRIBE): ' + error);
-      } else if (response.statusCode >= 400) {
-        console.error('ERROR(UNSUBSCRIBE): ErrorCode:'+response.statusCode+' - %s', response.statusMessage);
-      } else {
-        console.log('UNSUBSCRIBED: User(%s) unsubscribed from topic(%s)', token, topic);
-      }
-      logStatus(token);
-    });
+      .catch(function(error) {
+        console.error('ERROR(unsub): User(%s) failed unsubscribing from topic(%s): ' + error, token, topic);
+      });
   }
 });

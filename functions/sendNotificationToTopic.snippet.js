@@ -1,7 +1,7 @@
 /* SEND NOTIFICATION */
 exports.sendNotificationToTopic = functions.database.ref('/articles/published/{postId}').onWrite(event => {
   // Setting variables
-  const topic = 'articles';
+  const topic = 'topic_placeholder';
   const snapshot = event.data;
   // Only send a notification when a post has been created
   if (snapshot.previous.exists()) {
@@ -23,10 +23,11 @@ exports.sendNotificationToTopic = functions.database.ref('/articles/published/{p
     }
   };
   // Send a message to devices subscribed to the provided topic
-  admin.messaging().sendToTopic(topic, payload).then(function(response) {
-    // See the MessagingTopicResponse reference documentation for the contents of response
-    console.log('MESSAGE: Successfully sent message to a topic(%s): ' + response, topic);
-  }).catch(function(error) {
-    console.error('ERROR: Failed sending a message to a topic(%s): ' + error, topic);
-  });
+  admin.messaging().sendToTopic(topic, payload)
+    .then(function(response) {
+      console.log('MESSAGE: Successfully sent message to topic(%s): ' + response, topic);
+    })
+    .catch(function(error) {
+      console.error('ERROR(message): Failed sending a message to topic(%s): ' + error, topic);
+    });
 });
