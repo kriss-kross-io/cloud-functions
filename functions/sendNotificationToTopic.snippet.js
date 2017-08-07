@@ -19,15 +19,15 @@ exports.sendNotificationToTopic = functions.database.ref('/articles/published/{p
       title: 'A new article was published on ' + `${functions.config().firebase.authDomain}`,
       body: header ? (header.length <= 100 ? header : header.substring(0, 97) + '...') : '',
       icon: `https://${functions.config().firebase.authDomain}/images/kriss-kross-square-logo-192.png`,
-      click_action: `https://${functions.config().firebase.authDomain}/articles/${key}`
+      click_action: key ? `https://${functions.config().firebase.authDomain}/articles/${key}` : ''
     }
   };
   // Send a message to devices subscribed to the provided topic
   admin.messaging().sendToTopic(topic, payload)
     .then(function(response) {
-      console.log('MESSAGE: Successfully sent message to topic(%s): ' + response, topic);
+      console.info('MESSAGE: Successfully sent message to topic('+topic+'):\n', response);
     })
     .catch(function(error) {
-      console.error('ERROR(message): Failed sending a message to topic(%s): ' + error, topic);
+      console.error('ERROR(message): Failed sending a message to topic('+topic+'):\n', error);
     });
 });
