@@ -13,21 +13,21 @@ exports.toggleTopicSubscription = functions.database.ref('/topics/{topic}/{token
     // subscribing
     admin.messaging().subscribeToTopic(token, topic)
       .then(function(response) {
-        console.log('SUBSCRIBED: User(%s) subscribed to topic(%s): ' + response, token, topic);
+        console.info('SUBSCRIBED: User('+token+') subscribed to topic('+topic+'):\n', response);
         logStatus(token);
       })
       .catch(function(error) {
-        console.error('ERROR(sub): User(%s) failed subscribing to topic(%s): ' + error, token, topic);
+        console.error('ERROR(sub): User('+token+') failed subscribing to topic('+topic+'):\n', error);
       });
   } else {
     // unsubscribing
     admin.messaging().unsubscribeFromTopic(token, topic)
       .then(function(response) {
-        console.log('UNSUBSCRIBED: User(%s) unsubscribed from topic(%s): ' + response, token, topic);
+        console.log('UNSUBSCRIBED: User('+token+') unsubscribed from topic('+topic+'):\n', response);
         logStatus(token);
       })
       .catch(function(error) {
-        console.error('ERROR(unsub): User(%s) failed unsubscribing from topic(%s): ' + error, token, topic);
+        console.error('ERROR(unsub): User('+token+') failed subscribing to topic('+topic+'):\n', error);
       });
   }
 });
