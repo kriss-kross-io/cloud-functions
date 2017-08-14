@@ -13,21 +13,36 @@ exports.toggleTopicSubscription = functions.database.ref('/topics/{topic}/{token
     // subscribing
     admin.messaging().subscribeToTopic(token, topic)
       .then(function(response) {
-        console.info('SUBSCRIBED: User('+token+') subscribed to topic('+topic+'):\n', response);
-        logStatus(token);
+        if (response.successCount) {
+          console.info('SUBSCRIBED:\nUser('+token+') subscribed to topic('+topic+'):\n', response);
+          logStatus(token);
+        } else {
+          response.errors.forEach((result, index) => {
+            const errorInfo = result.error.errorInfo;
+            console.error('ERROR(sub):\nUser('+token+') failed subscribing to topic('+topic+'):\n', errorInfo.code);
+          });
+        }
+
       })
       .catch(function(error) {
-        console.error('ERROR(sub): User('+token+') failed subscribing to topic('+topic+'):\n', error);
+        console.error('ERROR(sub):\nUser('+token+') failed subscribing to topic('+topic+'):\n', error);
       });
   } else {
     // unsubscribing
     admin.messaging().unsubscribeFromTopic(token, topic)
       .then(function(response) {
-        console.log('UNSUBSCRIBED: User('+token+') unsubscribed from topic('+topic+'):\n', response);
-        logStatus(token);
+        if (response.successCount) {
+          console.info('UNSUBSCRIBED:\nUser('+token+') unsubscribed from topic('+topic+'):\n', response);
+          logStatus(token);
+        } else {
+          response.errors.forEach((result, index) => {
+            const errorInfo = result.error.errorInfo;
+            console.error('ERROR(unsub):\nUser('+token+') failed unsubscribing to topic('+topic+'):\n', errorInfo.code);
+          });
+        }
       })
       .catch(function(error) {
-        console.error('ERROR(unsub): User('+token+') failed subscribing to topic('+topic+'):\n', error);
+        console.error('ERROR(unsub):\nUser('+token+') failed unsubscribing to topic('+topic+'):\n', error);
       });
   }
 });
