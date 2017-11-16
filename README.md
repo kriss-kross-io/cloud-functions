@@ -27,6 +27,7 @@ const messaging = firebase.messaging();
 3. Set the `messaging-sender-id` property on `firebase-app` element (get ID from above)
 4. Create `functions` folder:
   - Create `package.json` and add dependencies:
+
 ``` json
 {
   "name": "cloud-functions",
@@ -41,7 +42,9 @@ const messaging = firebase.messaging();
   }
 }
 ```
+
   - Create `index.js`, add imports and init app:
+
 ``` javascript
 // Import and initialize the Firebase Admin SDK.
 const admin = require('firebase-admin');
@@ -54,21 +57,28 @@ admin.initializeApp(functions.config().firebase);
 // Setting api key
 const MESSAGING_SERVER_KEY = functions.config().messaging.key;
 ```
+
   - Set `SERVER_KEY` in environment config (get **SERVER_KEY** from `Settings > Project Settings > Cloud Messaging`):
+
 ``` bash
 firebase functions:config:set messaging.key="SERVER_KEY"
 ```
+
   - Generate and set `CRON_KEY` in environment config:
+
 ``` javascript
 npm install -g crypto
 node -e "console.log(require('crypto').randomBytes(20).toString('hex'))"
 ```
+
 ``` bash
 firebase functions:config:set cron.key="CRON_KEY"
 ```
+
   - Add export function snippets to the bottom of `index.js`
   - Lastly add `logStatus.snippet.js` to enable output to [logs](https://console.cloud.google.com/logs/viewer)
   - Update `Security Rules`:
+
 ``` json
 {
   "rules": {
