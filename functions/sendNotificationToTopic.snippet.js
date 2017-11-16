@@ -1,16 +1,7 @@
-/* SEND NOTIFICATION */
-exports.sendNotificationToTopic = functions.database.ref('/articles/published/{postId}').onWrite(event => {
-  // Setting variables
-  const topic = 'topic_placeholder';
+/* SEND NOTIFICATION - test_topic */
+exports.sendNotificationToTopic = functions.database.ref('/articles/published/{postId}').onCreate(event => {
+  const TOPIC = 'test_topic';
   const snapshot = event.data;
-  // Only send a notification when a post has been created
-  if (snapshot.previous.exists()) {
-    return;
-  }
-  // Exit when the data is deleted
-  if (!snapshot.exists()) {
-    return;
-  }
   // Setting payload
   const header = snapshot.val().header;
   const key = snapshot.val().key;
@@ -23,11 +14,9 @@ exports.sendNotificationToTopic = functions.database.ref('/articles/published/{p
     }
   };
   // Send a message to devices subscribed to the provided topic
-  admin.messaging().sendToTopic(topic, payload)
-    .then(function(response) {
-      console.info('MESSAGE: Successfully sent message to topic('+topic+'):\n', response);
-    })
-    .catch(function(error) {
-      console.error('ERROR(message): Failed sending a message to topic('+topic+'):\n', error);
-    });
+  return admin.messaging().sendToTopic(TOPIC, payload).then(function(response) {
+    console.info(`MESSAGE:\nSuccessfully sent message to topic(${TOPIC}):\n`, response);
+  }).catch(function(error) {
+    console.error(`ERROR(message):\nFailed sending a message to topic(${TOPIC}):\n`, error);
+  });
 });
