@@ -58,7 +58,7 @@ const MESSAGING_SERVER_KEY = functions.config().messaging.key;
 ``` bash
 firebase functions:config:set messaging.key="SERVER_KEY"
 ```
-  - Generate and set `CRON_KEY` in environment config (get **CRON_KEY** from ):
+  - Generate and set `CRON_KEY` in environment config:
 ``` javascript
 npm install -g crypto
 node -e "console.log(require('crypto').randomBytes(20).toString('hex'))"
@@ -129,5 +129,5 @@ This command deploys the application to hosting in the current project. Use
 `firebase list` to print a list of all Firebase projects.
 
 ``` bash
-firebase deploy functions
+firebase deploy --only functions
 ```
