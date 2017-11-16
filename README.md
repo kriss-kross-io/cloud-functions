@@ -33,9 +33,11 @@ const messaging = firebase.messaging();
   "description": "Firebase SDK for Cloud Functions",
   "private": true,
   "dependencies": {
-      "firebase-admin": "^4.1.1",
-      "firebase-functions": "^0.5.1",
-      "request": "^2.79.0"
+    "firebase-admin": "^5.5.0",
+    "firebase-functions": "^0.7.3",
+    "request": "^2.79.0",
+    "request-promise": "^4.2.1",
+    "secure-compare": "^3.0.1"
   }
 }
 ```
@@ -45,19 +47,44 @@ const messaging = firebase.messaging();
 const admin = require('firebase-admin');
 // Import the Firebase SDK for Google Cloud Functions
 const functions = require('firebase-functions');
-// Import request
-const request = require('request');
+
 // Init
 admin.initializeApp(functions.config().firebase);
-```
-  - Set `SERVER_KEY` (get **SERVER_KEY** from `Settings > Project Settings > Cloud Messaging`):
-``` javascript
+
 // Setting api key
-const MESSAGING_SERVER_KEY = "SERVER_KEY";
+const MESSAGING_SERVER_KEY = functions.config().messaging.key;
+```
+  - Set `SERVER_KEY` in environment config (get **SERVER_KEY** from `Settings > Project Settings > Cloud Messaging`):
+``` bash
+firebase functions:config:set messaging.key="SERVER_KEY"
+```
+  - Generate and set `CRON_KEY` in environment config (get **CRON_KEY** from ):
+``` javascript
+npm install -g crypto
+node -e "console.log(require('crypto').randomBytes(20).toString('hex'))"
+```
+``` bash
+firebase functions:config:set cron.key="CRON_KEY"
 ```
   - Add export function snippets to the bottom of `index.js`
   - Lastly add `logStatus.snippet.js` to enable output to [logs](https://console.cloud.google.com/logs/viewer)
-  - (Optional) Update `Security Rules` if using Firebase db triggers
+  - Update `Security Rules`:
+``` json
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "topics": {
+      "$topic": {
+        "$uid": {
+          ".read": "auth.uid === $uid",
+          ".write": "auth.uid === $uid"
+        }
+      }
+    }
+  }
+}
+```
 
 
 ## Setup
